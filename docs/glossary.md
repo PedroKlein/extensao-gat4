@@ -109,3 +109,18 @@ Capacidade de usar tecnologias digitais de forma crítica e eficaz. No contexto 
 | **Orientador de serviço** | Profissional do serviço de saúde que apoia a articulação com as equipes |
 | **Monitor(a)** | Estudante de graduação que participa ativamente do projeto |
 | **Extensionista** | Estudante vinculado ao projeto de extensão universitária |
+
+## Siglas adicionais (pesquisa)
+
+| Sigla | Significado | Descrição |
+|-------|-------------|-----------|
+| **BVAPS** | Biblioteca Virtual da Atenção Primária à Saúde | Repositório digital oficial da SMS Porto Alegre com protocolos, fluxos e ferramentas |
+| **SMAS/FASC** | Secretaria Municipal de Assistência Social / Fundação de Assistência Social e Cidadania | Órgão responsável pela rede de proteção social em Porto Alegre |
+| **CRAS** | Centro de Referência de Assistência Social | Proteção social básica — prevenção de vulnerabilidades |
+| **CREAS** | Centro de Referência Especializado de Assistência Social | Proteção especial — situações de violência, direitos violados |
+| **ROP** | Região do Orçamento Participativo | Divisão territorial de Porto Alegre para fins de participação popular (17 regiões) |
+| **DW** | Data Warehouse | No contexto do e-SUS, é o repositório SQL para extração avançada de dados de saúde |
+| **PEC** | Prontuário Eletrônico do Cidadão | Módulo principal do e-SUS APS para registro clínico |
+| **PICAPS** | Plataforma de Inteligência Cooperativa com APS | Plataforma da Fiocruz para mapeamento participativo em saúde |
+| **ViconSAGA** | Plataforma de Gestão Territorial | Software usado por PICAPS e ACS Mapeia para mapas interativos |
+| **PACK** | Practical Approach to Care Kit | Ferramenta de manejo clínico baseada em evidências, disponível na BVAPS |
