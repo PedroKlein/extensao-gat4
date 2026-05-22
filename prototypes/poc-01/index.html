@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Territorial — US Moab Caldas</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <button class="hamburger" id="menu-toggle">☰</button>
+    <h1>🗺️ Mapa de Acompanhamento Territorial</h1>
+    <span class="topbar-subtitle">US Moab Caldas — Bairro Santa Tereza</span>
+  </header>
+
+  <div class="app">
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+    <aside class="sidebar" id="sidebar">
+      <section class="sidebar-section">
+        <h3>Condições de Saúde</h3>
+        <label class="filter-check"><input type="checkbox" data-condicao="gestante" checked><span class="dot" style="background:#e91e8f"></span> Gestantes <span class="count" id="count-gestante">0</span></label>
+        <label class="filter-check"><input type="checkbox" data-condicao="tuberculose" checked><span class="dot" style="background:#7c3aed"></span> Tuberculose <span class="count" id="count-tuberculose">0</span></label>
+        <label class="filter-check"><input type="checkbox" data-condicao="cronico" checked><span class="dot" style="background:#2563eb"></span> Crônicos <span class="count" id="count-cronico">0</span></label>
+        <label class="filter-check"><input type="checkbox" data-condicao="acamado" checked><span class="dot" style="background:#d97706"></span> Acamados <span class="count" id="count-acamado">0</span></label>
+        <label class="filter-check"><input type="checkbox" data-condicao="transmissivel" checked><span class="dot" style="background:#dc2626"></span> Transmissíveis <span class="count" id="count-transmissivel">0</span></label>
+      </section>
+
+      <section class="sidebar-section">
+        <h3>Microárea</h3>
+        <select id="filter-microarea" class="select-filter">
+          <option value="todas">Todas</option>
+          <option value="1">Microárea 1</option>
+          <option value="2">Microárea 2</option>
+          <option value="3">Microárea 3</option>
+          <option value="4">Microárea 4</option>
+        </select>
+      </section>
+
+      <section class="sidebar-section">
+        <h3>Urgência</h3>
+        <label class="filter-check"><input type="checkbox" data-urgencia="atrasado" checked><span class="dot" style="background:#e53e3e"></span> Atrasado <span class="count" id="count-atrasado">0</span></label>
+        <label class="filter-check"><input type="checkbox" data-urgencia="proximo" checked><span class="dot" style="background:#d69e2e"></span> Próximo (7 dias) <span class="count" id="count-proximo">0</span></label>
+        <label class="filter-check"><input type="checkbox" data-urgencia="emdia" checked><span class="dot" style="background:#38a169"></span> Em dia <span class="count" id="count-emdia">0</span></label>
+      </section>
+
+      <section class="sidebar-section">
+        <h3>Camadas</h3>
+        <label class="filter-check"><input type="checkbox" id="toggle-microareas" checked><span class="dot" style="background:#94a3b8"></span> Microáreas</label>
+        <label class="filter-check"><input type="checkbox" id="toggle-equipamentos" checked><span class="dot" style="background:#06b6d4"></span> Equipamentos</label>
+      </section>
+
+      <section class="sidebar-section summary">
+        <h3>Resumo</h3>
+        <div class="summary-grid" id="summary-grid">
+          <!-- filled by JS -->
+        </div>
+      </section>
+
+      <section class="sidebar-section">
+        <h3>Dados</h3>
+        <label class="upload-btn">
+          📂 Carregar CSV
+          <input type="file" id="csv-upload" accept=".csv" hidden>
+        </label>
+        <p class="upload-info" id="upload-info">Usando dados de exemplo (35 pacientes)</p>
+      </section>
+    </aside>
+
+    <main class="map-container">
+      <div id="map"></div>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/filters.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

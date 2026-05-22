@@ -1,0 +1,12 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    { "type": "Feature", "properties": { "nome": "US Moab Caldas", "tipo": "saude", "icone": "🏥" }, "geometry": { "type": "Point", "coordinates": [-51.2201, -30.0729] } },
+    { "type": "Feature", "properties": { "nome": "Escola Municipal Santa Tereza", "tipo": "escola", "icone": "🏫" }, "geometry": { "type": "Point", "coordinates": [-51.2215, -30.0745] } },
+    { "type": "Feature", "properties": { "nome": "Igreja São José", "tipo": "igreja", "icone": "⛪" }, "geometry": { "type": "Point", "coordinates": [-51.2230, -30.0720] } },
+    { "type": "Feature", "properties": { "nome": "Praça Santa Tereza", "tipo": "lazer", "icone": "🌳" }, "geometry": { "type": "Point", "coordinates": [-51.2195, -30.0755] } },
+    { "type": "Feature", "properties": { "nome": "CRAS Cruzeiro", "tipo": "cras", "icone": "🏛️" }, "geometry": { "type": "Point", "coordinates": [-51.2240, -30.0765] } },
+    { "type": "Feature", "properties": { "nome": "Área de risco (encosta)", "tipo": "risco", "icone": "⚠️" }, "geometry": { "type": "Point", "coordinates": [-51.2180, -30.0775] } },
+    { "type": "Feature", "properties": { "nome": "Centro Comunitário Vila Nova", "tipo": "lazer", "icone": "🏠" }, "geometry": { "type": "Point", "coordinates": [-51.2260, -30.0740] } }
+  ]
+}

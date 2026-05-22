@@ -15,3 +15,8 @@ view: build
 # Clean generated site
 clean:
     rm -rf docs/site
+
+# Serve the PoC prototype locally
+poc:
+    @echo "Opening http://localhost:8080"
+    @cd prototypes/poc-01 && python3 -m http.server 8080
