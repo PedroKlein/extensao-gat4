@@ -1,0 +1,62 @@
+name: Deploy Protótipos to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'prototypes/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Build mapa-gestantes
+      - name: Build mapa-gestantes
+        working-directory: prototypes/mapa-gestantes
+        run: |
+          npm install
+          npm run build
+
+      # Assemble final site
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          # Index page
+          cp prototypes/index.html _site/index.html
+          # PoC 01 (already static)
+          cp -r prototypes/poc-01 _site/poc-01
+          # Mapa gestantes (built)
+          cp -r prototypes/mapa-gestantes/dist _site/mapa-gestantes
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

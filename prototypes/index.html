@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Protótipos — GAT 4 | PET-Saúde Digital</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+    .header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+      color: white;
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+    }
+    .header p {
+      font-size: 1rem;
+      opacity: 0.85;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+    .header .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-top: 1rem;
+      letter-spacing: 0.5px;
+    }
+    .container {
+      max-width: 900px;
+      margin: -2rem auto 3rem;
+      padding: 0 1.5rem;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 640px) {
+      .cards { grid-template-columns: 1fr 1fr; }
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+    .card-icon {
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+    }
+    .card-icon.poc01 { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); }
+    .card-icon.gestantes { background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); }
+    .card-body {
+      padding: 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-body h2 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: #1e293b;
+    }
+    .card-body p {
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.6;
+      flex: 1;
+    }
+    .card-tag {
+      display: inline-block;
+      margin-top: 0.75rem;
+      font-size: 0.7rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-green { background: #dcfce7; color: #166534; }
+    .tag-blue { background: #dbeafe; color: #1e40af; }
+    .footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8rem;
+      color: #94a3b8;
+    }
+    .footer a { color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🗺️ Protótipos — GAT 4</h1>
+    <p>
+      Provas de conceito de georreferenciamento em saúde para a Atenção Primária,
+      desenvolvidas pelo Grupo de Ação Territorial 4 do programa PET-Saúde Digital (UFRGS + SMS Porto Alegre).
+    </p>
+    <span class="badge">US Moab Caldas • Equipe 4 ESF • Dados sintéticos</span>
+  </div>
+
+  <div class="container">
+    <div class="cards">
+      <a href="./poc-01/" class="card">
+        <div class="card-icon poc01">🌍</div>
+        <div class="card-body">
+          <h2>Mapa de Acompanhamento Territorial</h2>
+          <p>
+            Visualização geral do território com múltiplas camadas de condições de saúde
+            (gestantes, tuberculose, crônicos, acamados), equipamentos sociais,
+            filtros por microárea e sistema de urgência por aprazamento.
+          </p>
+          <span class="card-tag tag-green">PoC 01 — Visão geral</span>
+        </div>
+      </a>
+
+      <a href="./mapa-gestantes/" class="card">
+        <div class="card-icon gestantes">🤰</div>
+        <div class="card-body">
+          <h2>Mapa de Gestantes</h2>
+          <p>
+            Acompanhamento específico de gestantes e puérperas com ficha detalhada,
+            sistema de urgência (score + alertas), filtros por trimestre,
+            expostas (HIV/Sífilis/HepB), microáreas e mapa de calor.
+          </p>
+          <span class="card-tag tag-blue">PoC 02 — Gestantes</span>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>
+      GAT 4 — PET-Saúde Digital UFRGS • 2026<br/>
+      <a href="https://github.com/PedroKlein/extensao-gat4" target="_blank">Repositório no GitHub</a>
+    </p>
+  </div>
+</body>
+</html>
