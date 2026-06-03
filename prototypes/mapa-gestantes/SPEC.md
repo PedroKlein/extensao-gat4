@@ -176,9 +176,49 @@ Dentro de cada categoria, um score numérico permite ordenar por prioridade rela
 - **Distância até a US** na ficha de cada paciente (metros/km + estimativa de caminhada)
 - **US Moab como ponto de referência** — marcador fixo no mapa com ícone distinto
 - **Marker clustering** — em zoom baixo, marcadores agrupam com contagem. Cor do cluster = pior urgência interna.
-- **Responsivo** (funcionar em tablet/mobile — layout adapta: sidebar vira bottom sheet, mapa ocupa tela cheia)
+- **Responsivo** (funcionar em tablet/mobile: filtros colapsados, stats no rodapé, painel sobe de baixo)
 - **Todo em português brasileiro**
-- **Polido para demonstração** — deve parecer um produto, não um hack
+- **Polido para demonstração**
+
+### Funcionalidades adicionais (implementadas após a spec inicial)
+
+8. **Rota a pé automática**
+   - Ao selecionar uma paciente, calcula e desenha a rota a pé da US até o endereço
+   - Usa OSRM public API (perfil walking)
+   - Mostra distância em km e tempo estimado
+   - Rota desaparece ao deselecionar
+
+9. **Mapa de calor com tiles escuros**
+   - Toggle troca para CartoDB Dark Matter (tiles pré-carregados)
+   - Intensidade ponderada pela urgência
+   - Marcadores ocultos durante o modo calor
+
+10. **Impressão de lista**
+    - Botão gera página formatada para impressão
+    - Tabela com nome, endereço, IG, urgência, score, alertas, ACS
+    - Útil para ACS em campo sem internet
+
+11. **Legenda permanente**
+    - Barra fixa no rodapé do mapa com cores e significados
+
+12. **Hover tooltip nos marcadores**
+    - Ao passar o mouse: nome + semana gestacional + ícone de urgência
+
+13. **Click em DPP 30d filtra**
+    - Clicar no card de DPP próximas destaca apenas essas pacientes por 5 segundos
+
+14. **Botão limpar filtros**
+    - Reseta todos os filtros ao estado inicial
+
+15. **Painel da US (relatório do território)**
+    - Clicar na US abre painel com total, distribuição, expostas, breakdown por ACS
+
+16. **Esc e click no mapa fecham o painel**
+    - Keyboard shortcut + click fora de marcadores fecha painel e limpa rota
+
+17. **Score explicado**
+    - Tooltip no badge de score mostra composição
+    - "Como funciona?" no painel expande tabela com todos os fatores e pesos
 
 ---
 

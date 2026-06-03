@@ -106,3 +106,12 @@ docs/
 | 16/04/2026 | 5ª reunião — integração com computação (Guilherme), definição de tarefas |
 | 23/04/2026 | **Prazo:** preenchimento das planilhas de condições de saúde |
 | 07/05/2026 | **Previsto:** apresentação na reunião ampliada de equipes da US Moab |
+
+## Protótipos
+
+Provas de conceito funcionais com dados sintéticos, disponíveis em [pedroklein.github.io/extensao-gat4](https://pedroklein.github.io/extensao-gat4/):
+
+| Protótipo | Descrição |
+|-----------|----------|
+| [Mapa Territorial](../prototypes/poc-01/) | Visão geral do território com camadas por condição de saúde e filtros por microárea |
+| [Mapa Gestantes](../prototypes/mapa-gestantes/) | Acompanhamento de gestantes com score de urgência, rota até paciente, mapa de calor e ficha detalhada |

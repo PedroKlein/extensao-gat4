@@ -29,8 +29,16 @@ docs/
 │   ├── territorialization.md          # How health territorialization works in Porto Alegre
 │   ├── geoprocessing-health.md        # Geoprocessing concepts applied to public health
 │   └── tools-and-platforms.md         # Existing tools (Geosaúde, GeoPoa, E-SUS, etc.)
+├── gestantes.csv                      # Source spreadsheet: pregnancy tracking
+├── gestantes-expostas.csv             # Source spreadsheet: exposed patients follow-up
 ├── site/                              # Generated HTML site (gitignored, run ./build.sh)
 └── *.pdf                              # Original source documents
+prototypes/
+├── index.html                         # Landing page for GitHub Pages (lists all PoCs)
+├── poc-01/                            # PoC: General territorial monitoring map
+└── mapa-gestantes/                    # PoC: Pregnancy tracking map (Vite + TS + Leaflet + Tailwind)
+.github/workflows/
+└── deploy.yml                         # Builds and deploys prototypes to GitHub Pages
 ```
 
 ## Documentation conventions
@@ -108,9 +116,16 @@ Read these files to understand the project domain before making changes:
 | Monitor (computação) | Guilherme | Computer engineering student, joined 16/04/2026 |
 | Monitores (saúde) | Bruno, Vinicio, Vinicius, Daniele, Roberta, Ketlin | Health students |
 
-## Future: PoC development
+## PoC development
 
-When code (prototypes, proofs of concept) is added to this repo:
+Two prototypes have been built and are deployed at [pedroklein.github.io/extensao-gat4](https://pedroklein.github.io/extensao-gat4/).
+
+### Current prototypes
+
+| Prototype | Stack | Description |
+|-----------|-------|-------------|
+| `prototypes/poc-01/` | Vanilla HTML/JS + Leaflet | General territorial map with multiple health condition layers, social equipment, urgency filters |
+| `prototypes/mapa-gestantes/` | Vite + TypeScript + Leaflet + Tailwind | Pregnancy tracking with urgency scoring, walking routes, heatmap, ACS microáreas, print |
 
 ### Architecture constraints
 
@@ -121,32 +136,40 @@ When code (prototypes, proofs of concept) is added to this repo:
 - **LGPD compliance** is mandatory — health data is sensitive. Never store identifiable patient data without proper access controls.
 - Consider **offline capability** — health units may have unreliable internet.
 
-### Tech stack considerations
+### Tech stack (chosen)
 
-The project hasn't committed to a stack yet. Decisions documented in meetings so far:
+The mapa-gestantes prototype uses:
 
-- The solution should be **web-based** (accessible from any computer at the US).
-- **Leaflet** or similar JS map libraries are natural candidates (open-source, lightweight).
-- Data sources: E-SUS exports, local spreadsheets (CSV/Excel), ACS manual input.
-- The **Geosaúde** map (Google My Maps) is the official territory reference but has no API. The solution must complement it, not replace it.
-- Prof. Netto and the computer engineering team will evaluate technical possibilities.
-- A computer will be provided at US Moab via the **Projeto Reconecta UFRGS**.
+- **Vite** as bundler (builds to static files for GitHub Pages)
+- **TypeScript** for type safety on data models and urgency logic
+- **Leaflet** + leaflet.heat + leaflet.markercluster for maps
+- **Tailwind CSS** for styling
+- **faker-js** (pt_BR locale) for synthetic data generation
+- **OSRM** public API for walking route calculation
+- **OpenStreetMap** tiles (light) + **CartoDB Dark Matter** (heatmap mode)
 
-### Code organization (when applicable)
+The poc-01 prototype uses vanilla HTML/JS/CSS with Leaflet loaded from CDN.
+
+Both produce static files that work offline after initial load (only map tiles require network).
+
+### Code organization
 
 ```
 extensao-gat4/
 ├── agents.md
+├── README.md
 ├── justfile
 ├── scripts/               # Build and utility scripts
-├── docs/                  # Documentation (already exists)
-├── src/                   # Application source code
-│   └── ...
-├── data/                  # Sample/test data (anonymized only!)
-│   └── ...
-├── prototypes/            # Quick prototypes, experiments
-│   └── ...
-└── README.md              # Top-level readme (point to docs/ for full context)
+├── docs/                  # Documentation
+├── prototypes/            # Working prototypes
+│   ├── index.html         # GitHub Pages landing page
+│   ├── poc-01/            # General territorial map
+│   └── mapa-gestantes/    # Pregnancy tracking (Vite project)
+│       ├── src/           # Application source
+│       ├── scripts/       # Data generation + screenshot tools
+│       ├── SPEC.md        # Functional specification
+│       └── PERGUNTAS-EQUIPE.md  # Questions for health team validation
+└── .github/workflows/     # CI/CD
 ```
 
 ### Data handling rules
