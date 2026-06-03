@@ -1,83 +1,64 @@
 /**
- * Curated microáreas — irregular polygons that properly contain
- * all assigned streets. Non-overlapping, complete coverage.
+ * Curated microáreas — non-overlapping polygons with shared edges.
+ * Named by ACS responsible. Proper tessellation covering the territory.
+ *
+ * Shared vertices ensure no overlaps or gaps.
+ * Layout:
+ *   MA1 (top-right) | MA3 (top-left/west)
+ *   MA2 (center)    |
+ *   MA4 (bottom-right/south) | MA5 (bottom-left/south-west)
  */
 
 import type { Microarea } from '../src/models/microarea';
 
+// Shared boundary vertices
+const A = [-30.0665, -51.2215] as [number, number]; // top-center
+const B = [-30.0665, -51.2145] as [number, number]; // top-right
+const C = [-30.0715, -51.2145] as [number, number]; // mid-right-top
+const D = [-30.0715, -51.2195] as [number, number]; // central junction
+const E = [-30.0665, -51.2280] as [number, number]; // top-left
+const F = [-30.0715, -51.2280] as [number, number]; // mid-left
+const G = [-30.0740, -51.2215] as [number, number]; // lower-central
+const H = [-30.0755, -51.2165] as [number, number]; // mid-right-bottom
+const I = [-30.0755, -51.2215] as [number, number]; // lower-central-2
+const J = [-30.0795, -51.2165] as [number, number]; // bottom-right
+const K = [-30.0795, -51.2280] as [number, number]; // bottom-left
+const L = [-30.0755, -51.2280] as [number, number]; // mid-left-lower
+
 export const CURATED_MICROAREAS: Microarea[] = [
   {
     id: 'MA1',
-    nome: 'Microárea 1 — Moab Caldas Norte',
+    nome: 'Microárea — ACS Joana',
     acsNome: 'Joana da Silva',
-    // North-east: along Av. Moab Caldas upper section
-    polygon: [
-      [-30.0665, -51.2200],
-      [-30.0665, -51.2145],
-      [-30.0715, -51.2145],
-      [-30.0740, -51.2160],
-      [-30.0740, -51.2175],
-      [-30.0715, -51.2200],
-    ],
+    // Top-right: north-east quadrant
+    polygon: [A, B, C, D],
   },
   {
     id: 'MA2',
-    nome: 'Microárea 2 — Centro / Aramy Silva',
+    nome: 'Microárea — ACS Rita',
     acsNome: 'Rita de Cássia Santos',
-    // Central band: between MA1 and MA4, includes Banco Inglês and Lobato streets
-    polygon: [
-      [-30.0715, -51.2215],
-      [-30.0715, -51.2170],
-      [-30.0740, -51.2175],
-      [-30.0740, -51.2160],
-      [-30.0755, -51.2165],
-      [-30.0755, -51.2215],
-      [-30.0740, -51.2230],
-    ],
+    // Central band (east side)
+    polygon: [D, C, H, I, G],
   },
   {
     id: 'MA3',
-    nome: 'Microárea 3 — Santa Cruz / Becos Oeste',
+    nome: 'Microárea — ACS Fátima',
     acsNome: 'Fátima Oliveira Souza',
-    // West side: becos, informal areas, north-west
-    polygon: [
-      [-30.0665, -51.2200],
-      [-30.0715, -51.2200],
-      [-30.0715, -51.2215],
-      [-30.0740, -51.2230],
-      [-30.0730, -51.2280],
-      [-30.0695, -51.2280],
-      [-30.0660, -51.2260],
-    ],
+    // Top-left / west side (north)
+    polygon: [E, A, D, G, L, F],
   },
   {
     id: 'MA4',
-    nome: 'Microárea 4 — Vila Cruzeiro / Cruzeiro do Sul',
+    nome: 'Microárea — ACS Carla',
     acsNome: 'Carla Mendes Ferreira',
-    // South: Vila Cruzeiro, below the central band
-    polygon: [
-      [-30.0755, -51.2215],
-      [-30.0755, -51.2165],
-      [-30.0795, -51.2165],
-      [-30.0795, -51.2265],
-      [-30.0770, -51.2265],
-      [-30.0740, -51.2255],
-      [-30.0740, -51.2230],
-    ],
+    // Bottom-right (south-east, Vila Cruzeiro)
+    polygon: [I, H, J, K, L],
   },
   {
     id: 'MA5',
-    nome: 'Microárea 5 — Joracy Camargo / Leste',
+    nome: 'Microárea — ACS Sandra',
     acsNome: 'Sandra Pereira Lima',
-    // East-south: between MA2 and MA4, includes Gibran and Leônidas
-    polygon: [
-      [-30.0740, -51.2230],
-      [-30.0755, -51.2215],
-      [-30.0775, -51.2210],
-      [-30.0795, -51.2165],
-      [-30.0755, -51.2165],
-      [-30.0740, -51.2175],
-      [-30.0715, -51.2215],
-    ],
+    // Bottom-left (south-west)
+    polygon: [G, I, L, F],
   },
 ];

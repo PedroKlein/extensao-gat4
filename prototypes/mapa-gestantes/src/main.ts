@@ -4,7 +4,7 @@ import gestantesData from './data/gestantes.json';
 import type { Gestante } from './models';
 import { calculateUrgency } from './logic/urgency';
 import type { UrgencyCategory, UrgencyResult } from './models';
-import { initDetailPanel, showDetailPanel } from './components/detail-panel';
+import { initDetailPanel, showDetailPanel, showUSPanel } from './components/detail-panel';
 import { initFilters, updateFilterCount } from './components/filters';
 import { matchesFilter, type FilterState } from './logic/filter-engine';
 import { daysSince } from './logic/dates';
@@ -15,8 +15,8 @@ import { initHeatmapLayer } from './components/heatmap-layer';
 import { initMicroareaLayer } from './components/microarea-layer';
 import { detectHouseholds } from './logic/household';
 
-// US Moab Caldas coordinates
-const US_MOAB_COORDS: L.LatLngExpression = [-30.0729573, -51.2201539];
+// US Moab Caldas coordinates (Av. Moab Caldas, 400 — verified via Nominatim/OSM)
+const US_MOAB_COORDS: L.LatLngExpression = [-30.0692745, -51.2166063];
 const DEFAULT_ZOOM = 15;
 
 // Urgency colors
@@ -50,7 +50,10 @@ const usIcon = L.divIcon({
 
 L.marker(US_MOAB_COORDS, { icon: usIcon })
   .addTo(map)
-  .bindTooltip('US Moab Caldas', { permanent: false, direction: 'top', offset: [0, -18] });
+  .bindTooltip('US Moab Caldas', { permanent: false, direction: 'top', offset: [0, -18] })
+  .on('click', () => {
+    showUSPanel(gestanteMarkers);
+  });
 
 // Initialize UI components
 initDetailPanel();

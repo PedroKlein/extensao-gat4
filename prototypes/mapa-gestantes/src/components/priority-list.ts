@@ -8,6 +8,7 @@ import type { GestanteWithUrgency } from '../main';
 import { selectGestante, URGENCY_COLORS } from '../main';
 import { showDetailPanel } from './detail-panel';
 import { calculateIG } from '../logic/dates';
+import { getScoreBreakdown } from '../logic/urgency';
 import L from 'leaflet';
 
 const URGENCY_ICONS: Record<UrgencyCategory, string> = {
@@ -83,6 +84,10 @@ export function updatePriorityList(items: GestanteWithUrgency[]): void {
       ? `<span class="text-red-600 font-medium">${item.diasSemConsulta}d s/ consulta</span>`
       : '';
 
+    // Score breakdown for tooltip
+    const breakdown = getScoreBreakdown(item.urgency.alerts);
+    const tooltipText = breakdown.length > 0 ? breakdown.join(' | ') : 'Sem alertas';
+
     return `
       <div class="list-item px-3 py-2.5 border-b border-gray-50 hover:bg-blue-50 cursor-pointer transition-colors" data-id="${g.id}" style="border-left:3px solid ${color}">
         <div class="flex items-start gap-2">
@@ -90,7 +95,7 @@ export function updatePriorityList(items: GestanteWithUrgency[]): void {
           <div class="flex-1 min-w-0">
             <div class="flex items-center justify-between">
               <p class="text-xs font-semibold text-gray-800 truncate">${g.nome}</p>
-              <span class="text-xs font-mono px-1.5 py-0.5 rounded text-white flex-shrink-0 ml-1" style="background:${color};font-size:10px">${item.urgency.score}</span>
+              <span class="text-xs font-mono px-1.5 py-0.5 rounded text-white flex-shrink-0 ml-1 cursor-help" style="background:${color};font-size:10px" title="${tooltipText}">${item.urgency.score}</span>
             </div>
             <p class="text-xs text-gray-500 mt-0.5">${statusLine}${g.isExposta ? ' • <span class="text-red-600 font-medium">Exposta</span>' : ''}</p>
             ${diasInfo ? `<p class="text-xs mt-0.5">${diasInfo}</p>` : ''}

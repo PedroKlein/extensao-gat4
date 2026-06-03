@@ -1,6 +1,6 @@
 /**
- * Microárea layer — renders polygons with distinct colors per area.
- * Each microárea has its own identifying color.
+ * Microárea layer — renders polygons with distinct colors per ACS.
+ * Labels show "ACS [Name]" with tooltip explaining the acronym.
  */
 
 import L from 'leaflet';
@@ -19,8 +19,13 @@ export const MICROAREA_COLORS: Record<string, string> = {
   'MA5': '#ec4899', // pink
 };
 
-const MICROAREA_FILL_OPACITY = 0.15;
-const MICROAREA_BORDER_OPACITY = 0.7;
+/** ACS names by MA id — exported for filters */
+export const MICROAREA_ACS: Record<string, string> = {};
+
+// Populate from data
+for (const ma of microareas) {
+  MICROAREA_ACS[ma.id] = ma.acsNome;
+}
 
 let polygonLayer: L.LayerGroup | null = null;
 let isVisible = false;
@@ -33,6 +38,7 @@ export function initMicroareaLayer(container: HTMLElement, map: L.Map, markers: 
 
   for (const ma of microareas) {
     const color = MICROAREA_COLORS[ma.id] || '#888888';
+    const firstName = ma.acsNome.split(' ')[0]; // "Joana", "Rita", etc.
 
     // Calculate stats for this microárea
     const maMarkers = markers.filter(m => m.gestante.microarea === ma.id);
@@ -45,33 +51,34 @@ export function initMicroareaLayer(container: HTMLElement, map: L.Map, markers: 
       fillColor: color,
       color: color,
       weight: 3,
-      fillOpacity: MICROAREA_FILL_OPACITY,
-      opacity: MICROAREA_BORDER_OPACITY,
+      fillOpacity: 0.12,
+      opacity: 0.7,
       dashArray: '6 4',
     });
 
+    // Tooltip with ACS acronym explained
     polygon.bindTooltip(`
-      <div style="min-width:160px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+      <div style="min-width:170px">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
           <span style="width:12px;height:12px;border-radius:3px;background:${color};display:inline-block"></span>
-          <strong>${ma.id}</strong>
+          <strong style="font-size:12px">${ma.id}</strong>
         </div>
-        <div style="font-size:11px;color:#555">
-          <strong>ACS:</strong> ${ma.acsNome}<br/>
-          <strong>Gestantes:</strong> ${total}<br/>
+        <div style="font-size:11px;color:#555;line-height:1.6">
+          <span style="border-bottom:1px dotted #888" title="Agente Comunitário(a) de Saúde">ACS</span>: <strong>${ma.acsNome}</strong><br/>
+          Gestantes: ${total}<br/>
           🔴 ${criticas} críticas • 🟢 ${percentEmDia}% em dia
         </div>
       </div>
     `, { sticky: true });
 
-    // Add a label in the center of the polygon
+    // Label at polygon center
     const center = getPolygonCenter(ma.polygon);
     const label = L.marker(center as L.LatLngExpression, {
       icon: L.divIcon({
         className: '',
-        html: `<div style="background:${color};color:white;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:bold;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3)">${ma.id}</div>`,
-        iconSize: [40, 20],
-        iconAnchor: [20, 10],
+        html: `<div style="background:${color};color:white;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,0.3);letter-spacing:0.3px" title="Agente Comunitário(a) de Saúde: ${ma.acsNome}">ACS ${firstName}</div>`,
+        iconSize: [70, 20],
+        iconAnchor: [35, 10],
       }),
       interactive: false,
     });

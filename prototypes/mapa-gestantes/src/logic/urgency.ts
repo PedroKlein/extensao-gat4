@@ -242,3 +242,53 @@ function getExpectedConsultations(trimester: 1 | 2 | 3): number {
 
 // Re-export for convenience
 export { TRIMESTER_WEEKS, TEMPORAL_THRESHOLDS, SCORE_FACTORS };
+
+/**
+ * Generates a human-readable breakdown of score factors for a given urgency result.
+ * Used in tooltips and explanations.
+ */
+export function getScoreBreakdown(alerts: UrgencyAlert[]): string[] {
+  return alerts.map(a => {
+    switch (a.code) {
+      case 'TR_REAGENTE': return `TR Reagente: +${SCORE_FACTORS.TR_REAGENTE}`;
+      case 'PA_ELEVADA': return `PA elevada: +${SCORE_FACTORS.PA_ELEVADA}`;
+      case 'CONSULTA_MUITO_ATRASADA':
+      case 'CONSULTA_ATRASADA': {
+        const match = a.message.match(/(\d+) dias/);
+        const dias = match ? parseInt(match[1]) : 0;
+        const pts = (dias - SCORE_FACTORS.DIAS_SEM_CONSULTA_THRESHOLD) * SCORE_FACTORS.DIAS_SEM_CONSULTA_POR_DIA;
+        return `${dias}d s/ consulta: +${pts}`;
+      }
+      case 'TR_3TRI_PENDENTE':
+      case 'TR_1TRI_PENDENTE':
+      case 'TR_2TRI_PENDENTE': return `Exame pendente: +${SCORE_FACTORS.EXAME_PENDENTE_TRIMESTRE}`;
+      case 'SEM_ODONTO':
+      case 'SEM_ODONTO_POSNATAL': return `Sem odonto: +${SCORE_FACTORS.SEM_ODONTO}`;
+      case 'DTPA_PENDENTE': return `DTpa pendente: +${SCORE_FACTORS.DTPA_PENDENTE}`;
+      case 'SEM_VD':
+      case 'SEM_VD_POSNATAL': return `Sem VD: +${SCORE_FACTORS.SEM_VISITA_DOMICILIAR}`;
+      case 'POUCAS_CONSULTAS': return `Poucas consultas: +${SCORE_FACTORS.POUCAS_CONSULTAS}`;
+      case 'PESO_ATRASADO': return `Peso atrasado: +5`;
+      case 'SEM_ACOMP_POSNATAL': return `Sem acomp. pós-natal: +60`;
+      case 'SEM_CONSULTA_PUERPERIO': return `Sem consulta puerpério: +30`;
+      case 'PUERPERA_SEM_RETORNO': {
+        const match = a.message.match(/(\d+) dias/);
+        const dias = match ? parseInt(match[1]) : 0;
+        return `${dias}d s/ retorno: +${dias * SCORE_FACTORS.DIAS_SEM_CONSULTA_POR_DIA}`;
+      }
+      default: return a.message;
+    }
+  });
+}
+
+/** Static explanation of the scoring system */
+export const SCORE_EXPLANATION = [
+  { fator: 'TR Reagente (HIV/Sífilis/HepB)', pontos: `+${SCORE_FACTORS.TR_REAGENTE}` },
+  { fator: 'PA ≥ 140/90', pontos: `+${SCORE_FACTORS.PA_ELEVADA}` },
+  { fator: 'Dias sem consulta (após 14d)', pontos: `+${SCORE_FACTORS.DIAS_SEM_CONSULTA_POR_DIA}/dia` },
+  { fator: 'Exame pendente no trimestre', pontos: `+${SCORE_FACTORS.EXAME_PENDENTE_TRIMESTRE}` },
+  { fator: 'Sem visita domiciliar', pontos: `+${SCORE_FACTORS.SEM_VISITA_DOMICILIAR}` },
+  { fator: 'Poucas consultas para IG', pontos: `+${SCORE_FACTORS.POUCAS_CONSULTAS}` },
+  { fator: 'Sem avaliação odontológica', pontos: `+${SCORE_FACTORS.SEM_ODONTO}` },
+  { fator: 'DTpa pendente (>20 sem)', pontos: `+${SCORE_FACTORS.DTPA_PENDENTE}` },
+];
