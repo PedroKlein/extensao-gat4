@@ -109,9 +109,10 @@ function renderFilters(): string {
         <p class="text-xs text-gray-500" id="slider-label">Todas (sem filtro)</p>
       </div>
 
-      <!-- Count -->
-      <div class="pt-2 border-t border-gray-200">
-        <p class="text-xs text-gray-500">Mostrando: <strong id="filter-count">0</strong> gestantes</p>
+      <!-- Count + Reset -->
+      <div class="pt-2 border-t border-gray-200 flex items-center justify-between">
+        <p class="text-xs text-gray-500">Mostrando: <strong id="filter-count">0</strong></p>
+        <button id="reset-filters" class="text-xs text-blue-600 hover:text-blue-800 font-medium">Limpar</button>
       </div>
     </div>
   `;
@@ -174,6 +175,27 @@ function bindEvents(): void {
       );
       emitChange();
     });
+  });
+
+  // Reset filters button (feature 7)
+  filtersEl.querySelector('#reset-filters')?.addEventListener('click', () => {
+    // Reset all checkboxes
+    filtersEl!.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      (cb as HTMLInputElement).checked = !cb.hasAttribute('data-filter') || (cb as HTMLInputElement).getAttribute('data-filter') !== 'expostas';
+      if ((cb as HTMLInputElement).getAttribute('data-filter') === 'expostas') {
+        (cb as HTMLInputElement).checked = false;
+      } else {
+        (cb as HTMLInputElement).checked = true;
+      }
+    });
+    // Reset slider
+    const slider = filtersEl!.querySelector('[data-filter="slider"]') as HTMLInputElement;
+    if (slider) { slider.value = '0'; }
+    const label = filtersEl!.querySelector('#slider-label');
+    if (label) label.textContent = 'Todas (sem filtro)';
+    // Reset state
+    Object.assign(currentFilters, createDefaultFilterState());
+    emitChange();
   });
 
   // Time slider

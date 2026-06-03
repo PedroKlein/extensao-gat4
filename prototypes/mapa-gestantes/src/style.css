@@ -60,6 +60,21 @@
 
 /* No extra selection animation — handled via Leaflet marker style directly */
 
+/* Route label styling */
+.route-label {
+  background: rgba(37, 99, 235, 0.9) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+}
+.route-label::before {
+  display: none !important;
+}
+
 /* Custom scrollbar for panels */
 #detail-panel::-webkit-scrollbar,
 #priority-list #list-items::-webkit-scrollbar {

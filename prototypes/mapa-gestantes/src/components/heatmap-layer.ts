@@ -1,5 +1,6 @@
 /**
  * Heatmap layer — density visualization using leaflet.heat.
+ * Switches to dark tiles when active for better visibility.
  */
 
 import L from 'leaflet';
@@ -11,10 +12,25 @@ let isActive = false;
 let mapRef: L.Map | null = null;
 let toggleBtn: HTMLElement | null = null;
 let markersRef: GestanteWithUrgency[] = [];
+let lightTiles: L.TileLayer | null = null;
+let darkTiles: L.TileLayer | null = null;
 
 export function initHeatmapLayer(container: HTMLElement, map: L.Map, markers: GestanteWithUrgency[]): void {
   mapRef = map;
   markersRef = markers;
+
+  // Get existing light tile layer
+  map.eachLayer((layer) => {
+    if (layer instanceof L.TileLayer) {
+      lightTiles = layer;
+    }
+  });
+
+  // Create dark tile layer (CartoDB Dark Matter)
+  darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
+    maxZoom: 19,
+  });
 
   toggleBtn = document.createElement('button');
   toggleBtn.id = 'heatmap-toggle';
@@ -25,42 +41,47 @@ export function initHeatmapLayer(container: HTMLElement, map: L.Map, markers: Ge
 }
 
 function toggleHeatmap(): void {
-  if (!mapRef || !toggleBtn) return;
+  if (!mapRef || !toggleBtn || !lightTiles || !darkTiles) return;
 
   if (isActive) {
-    // Deactivate heatmap, show markers
+    // Deactivate heatmap, show markers, restore light tiles
     if (heatLayer) {
       mapRef.removeLayer(heatLayer);
       heatLayer = null;
     }
+    mapRef.removeLayer(darkTiles);
+    lightTiles.addTo(mapRef);
     for (const item of markersRef) {
       if (!mapRef.hasLayer(item.marker)) {
         item.marker.addTo(mapRef);
       }
     }
     toggleBtn.textContent = '🌡️ Mapa de Calor';
-    toggleBtn.classList.remove('bg-blue-100', 'text-blue-700');
+    toggleBtn.classList.remove('bg-gray-800', 'text-orange-300');
     isActive = false;
   } else {
-    // Activate heatmap, hide markers
+    // Activate heatmap: hide markers, switch to dark tiles
     for (const item of markersRef) {
       if (mapRef.hasLayer(item.marker)) {
         mapRef.removeLayer(item.marker);
       }
     }
+    mapRef.removeLayer(lightTiles);
+    darkTiles.addTo(mapRef);
+
     const points: [number, number, number][] = markersRef.map(item => [
       item.gestante.endereco.lat,
       item.gestante.endereco.lng,
       item.urgency.category === 'critico' ? 1.0 : item.urgency.category === 'atencao' ? 0.6 : 0.3,
     ]);
     heatLayer = L.heatLayer(points, {
-      radius: 30,
-      blur: 20,
+      radius: 35,
+      blur: 25,
       maxZoom: 17,
       gradient: { 0.2: '#22c55e', 0.5: '#f59e0b', 0.8: '#ef4444', 1.0: '#7f1d1d' },
     }).addTo(mapRef);
     toggleBtn.textContent = '📍 Marcadores';
-    toggleBtn.classList.add('bg-blue-100', 'text-blue-700');
+    toggleBtn.classList.add('bg-gray-800', 'text-orange-300');
     isActive = true;
   }
 }

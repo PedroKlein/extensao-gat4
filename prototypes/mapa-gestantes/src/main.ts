@@ -4,7 +4,7 @@ import gestantesData from './data/gestantes.json';
 import type { Gestante } from './models';
 import { calculateUrgency } from './logic/urgency';
 import type { UrgencyCategory, UrgencyResult } from './models';
-import { initDetailPanel, showDetailPanel, showUSPanel } from './components/detail-panel';
+import { initDetailPanel, showDetailPanel, showUSPanel, hideDetailPanel } from './components/detail-panel';
 import { initFilters, updateFilterCount } from './components/filters';
 import { matchesFilter, type FilterState } from './logic/filter-engine';
 import { daysSince } from './logic/dates';
@@ -52,11 +52,54 @@ L.marker(US_MOAB_COORDS, { icon: usIcon })
   .addTo(map)
   .bindTooltip('US Moab Caldas', { permanent: false, direction: 'top', offset: [0, -18] })
   .on('click', () => {
+    markMarkerClick();
     showUSPanel(gestanteMarkers);
   });
 
 // Initialize UI components
 initDetailPanel();
+
+// --- Route to patient (OSRM) ---
+let routeLayer: L.Polyline | null = null;
+
+function clearRoute(): void {
+  if (routeLayer) {
+    map.removeLayer(routeLayer);
+    routeLayer = null;
+  }
+}
+
+async function showRoute(destLat: number, destLng: number): Promise<void> {
+  clearRoute();
+  const usLat = -30.0692745;
+  const usLng = -51.2166063;
+
+  try {
+    const url = `https://router.project-osrm.org/route/v1/foot/${usLng},${usLat};${destLng},${destLat}?overview=full&geometries=geojson`;
+    const resp = await fetch(url);
+    const data = await resp.json();
+
+    if (data.routes && data.routes.length > 0) {
+      const route = data.routes[0];
+      const coords: L.LatLngExpression[] = route.geometry.coordinates.map(
+        (c: [number, number]) => [c[1], c[0]] as L.LatLngExpression
+      );
+
+      routeLayer = L.polyline(coords, {
+        color: '#2563eb',
+        weight: 4,
+        opacity: 0.7,
+        dashArray: '8 6',
+      }).addTo(map);
+
+      const distKm = (route.distance / 1000).toFixed(1);
+      const timeMin = Math.ceil(route.duration / 60);
+      routeLayer.bindTooltip(`🚶 ${distKm} km • ~${timeMin} min`, { permanent: true, direction: 'center', className: 'route-label' });
+    }
+  } catch (err) {
+    console.error('Erro ao buscar rota:', err);
+  }
+}
 
 // --- Data + markers ---
 export interface GestanteWithUrgency {
@@ -73,6 +116,9 @@ export const gestanteMarkers: GestanteWithUrgency[] = [];
 let selectedId: string | null = null;
 
 export function selectGestante(id: string): void {
+  // Clear previous route
+  clearRoute();
+
   // Deselect previous
   if (selectedId) {
     const prev = gestanteMarkers.find(m => m.gestante.id === selectedId);
@@ -101,6 +147,9 @@ export function selectGestante(id: string): void {
       fillOpacity: 1,
     });
     item.marker.bringToFront();
+
+    // Auto-show route
+    showRoute(item.gestante.endereco.lat, item.gestante.endereco.lng);
   }
 }
 
@@ -108,11 +157,30 @@ export function getSelectedId(): string | null {
   return selectedId;
 }
 
-// --- Render markers ---
+function deselectCurrent(): void {
+  if (selectedId) {
+    const prev = gestanteMarkers.find(m => m.gestante.id === selectedId);
+    if (prev) {
+      const color = URGENCY_COLORS[prev.urgency.category];
+      const baseRadius = prev.urgency.category === 'critico' ? 10 : prev.urgency.category === 'atencao' ? 8 : 6;
+      prev.marker.setStyle({
+        radius: baseRadius,
+        color: '#ffffff',
+        weight: 2,
+        fillColor: color,
+        fillOpacity: 0.85,
+      });
+    }
+    selectedId = null;
+  }
+}
+
+// --- Render markers (with hover tooltip — feature 6) ---
 for (const g of gestantes) {
   const urgency = calculateUrgency(g);
   const color = URGENCY_COLORS[urgency.category];
   const diasSemConsulta = daysSince(g.consultas.dataUltimaConsulta);
+  const igText = g.isPuerpera ? 'Puérpera' : `${Math.floor((Date.now() - new Date(g.consultas.dum).getTime()) / (1000 * 60 * 60 * 24 * 7))} sem`;
 
   const marker = L.circleMarker([g.endereco.lat, g.endereco.lng], {
     radius: urgency.category === 'critico' ? 10 : urgency.category === 'atencao' ? 8 : 6,
@@ -122,6 +190,12 @@ for (const g of gestantes) {
     fillOpacity: 0.85,
     opacity: 1,
   }).addTo(map);
+
+  // Hover tooltip (feature 6)
+  marker.bindTooltip(`<strong>${g.nome}</strong><br/><span style="font-size:11px">${igText} • ${urgency.category === 'critico' ? '🔴' : urgency.category === 'atencao' ? '🟡' : '🟢'}</span>`, {
+    direction: 'top',
+    offset: [0, -8],
+  });
 
   gestanteMarkers.push({ gestante: g, urgency, marker, diasSemConsulta });
 }
@@ -182,6 +256,7 @@ for (const group of households) {
   for (const m of group.members) {
     m.marker.off('click');
     m.marker.on('click', () => {
+      markMarkerClick();
       badge.openPopup();
     });
   }
@@ -192,6 +267,7 @@ const groupedIds = new Set(households.flatMap(h => h.members.map(m => m.gestante
 for (const item of gestanteMarkers) {
   if (!groupedIds.has(item.gestante.id)) {
     item.marker.on('click', () => {
+      markMarkerClick();
       selectGestante(item.gestante.id);
       showDetailPanel(item.gestante, item.urgency);
     });
@@ -230,14 +306,70 @@ function applyFilters(filters: FilterState): void {
 const appEl = document.getElementById('app')!;
 initFilters(appEl, applyFilters);
 initPriorityList(appEl, map);
-initStatsDashboard(appEl);
+initStatsDashboard(appEl, (dppItems) => {
+  // When DPP card is clicked, highlight those patients
+  for (const item of gestanteMarkers) {
+    const isDpp = dppItems.some(d => d.gestante.id === item.gestante.id);
+    if (isDpp) {
+      if (!map.hasLayer(item.marker)) item.marker.addTo(map);
+      item.marker.setStyle({ fillOpacity: 1, opacity: 1 });
+    } else {
+      item.marker.setStyle({ fillOpacity: 0.15, opacity: 0.3 });
+    }
+  }
+  updatePriorityList(dppItems);
+  // Reset after 5 seconds
+  setTimeout(() => {
+    for (const item of gestanteMarkers) {
+      item.marker.setStyle({ fillOpacity: 0.85, opacity: 1 });
+    }
+    updatePriorityList(gestanteMarkers);
+  }, 5000);
+});
 initSearch(appEl, map, gestanteMarkers);
 initHeatmapLayer(appEl, map, gestanteMarkers);
 initMicroareaLayer(appEl, map, gestanteMarkers);
+
+// --- Feature 1: Persistent legend ---
+const legendEl = document.createElement('div');
+legendEl.className = 'absolute bottom-4 left-1/2 -translate-x-1/2 z-[800] bg-white/90 backdrop-blur-sm rounded-lg shadow px-4 py-2 flex items-center gap-4 text-xs';
+legendEl.innerHTML = `
+  <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-red-600 inline-block"></span> Crítico</span>
+  <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-amber-600 inline-block"></span> Atenção</span>
+  <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-green-600 inline-block"></span> Normal</span>
+  <span class="flex items-center gap-1"><span class="w-4 h-4 rounded-full bg-blue-600 inline-flex items-center justify-center text-white" style="font-size:8px;font-weight:bold">US</span> Unidade</span>
+`;
+appEl.appendChild(legendEl);
 
 // Initial state
 updateFilterCount(gestanteMarkers.length);
 updatePriorityList(gestanteMarkers);
 updateStatsDashboard(gestanteMarkers);
+
+// --- Feature 4: Esc closes panel + clears route + deselects ---
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    deselectCurrent();
+    hideDetailPanel();
+    clearRoute();
+  }
+});
+
+// --- Feature 8: Click on map closes panel + clears route + deselects ---
+let justClickedMarker = false;
+map.on('click', () => {
+  if (justClickedMarker) {
+    justClickedMarker = false;
+    return;
+  }
+  deselectCurrent();
+  hideDetailPanel();
+  clearRoute();
+});
+
+// Export helper for marker clicks to set the flag
+export function markMarkerClick(): void {
+  justClickedMarker = true;
+}
 
 console.log(`Mapa Gestantes: ${gestantes.length} marcadores renderizados`);
