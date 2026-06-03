@@ -26,11 +26,12 @@ export function initHeatmapLayer(container: HTMLElement, map: L.Map, markers: Ge
     }
   });
 
-  // Create dark tile layer (CartoDB Dark Matter)
+  // Pre-add dark tile layer (hidden initially via opacity)
   darkTiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
     maxZoom: 19,
-  });
+  }).addTo(map);
+  darkTiles.getContainer()!.style.display = 'none';
 
   toggleBtn = document.createElement('button');
   toggleBtn.id = 'heatmap-toggle';
@@ -44,13 +45,13 @@ function toggleHeatmap(): void {
   if (!mapRef || !toggleBtn || !lightTiles || !darkTiles) return;
 
   if (isActive) {
-    // Deactivate heatmap, show markers, restore light tiles
+    // Deactivate heatmap: show light tiles, hide dark, show markers
     if (heatLayer) {
       mapRef.removeLayer(heatLayer);
       heatLayer = null;
     }
-    mapRef.removeLayer(darkTiles);
-    lightTiles.addTo(mapRef);
+    darkTiles.getContainer()!.style.display = 'none';
+    lightTiles.getContainer()!.style.display = '';
     for (const item of markersRef) {
       if (!mapRef.hasLayer(item.marker)) {
         item.marker.addTo(mapRef);
@@ -60,14 +61,14 @@ function toggleHeatmap(): void {
     toggleBtn.classList.remove('bg-gray-800', 'text-orange-300');
     isActive = false;
   } else {
-    // Activate heatmap: hide markers, switch to dark tiles
+    // Activate heatmap: hide light tiles, show dark, hide markers
     for (const item of markersRef) {
       if (mapRef.hasLayer(item.marker)) {
         mapRef.removeLayer(item.marker);
       }
     }
-    mapRef.removeLayer(lightTiles);
-    darkTiles.addTo(mapRef);
+    lightTiles.getContainer()!.style.display = 'none';
+    darkTiles.getContainer()!.style.display = '';
 
     const points: [number, number, number][] = markersRef.map(item => [
       item.gestante.endereco.lat,

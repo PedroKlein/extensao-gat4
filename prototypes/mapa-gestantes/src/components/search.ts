@@ -17,7 +17,7 @@ export function initSearch(container: HTMLElement, map: L.Map, items: GestanteWi
 
   searchEl = document.createElement('div');
   searchEl.id = 'search-box';
-  searchEl.className = 'absolute top-4 left-1/2 -translate-x-1/2 z-[1000] w-80 max-w-[70vw]';
+  searchEl.className = 'absolute top-3 left-1/2 -translate-x-1/2 z-[1100] w-96 max-w-[50vw]';
   searchEl.innerHTML = `
     <div class="relative">
       <input

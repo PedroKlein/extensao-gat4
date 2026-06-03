@@ -21,7 +21,8 @@ export function initFilters(container: HTMLElement, onChange: FilterChangeCallba
   onChangeCallback = onChange;
   filtersEl = document.createElement('div');
   filtersEl.id = 'filters-panel';
-  filtersEl.className = 'absolute top-4 left-4 z-[1000] bg-white rounded-lg shadow-lg w-64 overflow-hidden text-sm';
+  const isMobile = window.innerWidth < 768;
+  filtersEl.className = `absolute top-4 left-4 z-[1000] bg-white rounded-lg shadow-lg w-64 overflow-hidden text-sm ${isMobile ? '' : 'filters-open'}`;
   filtersEl.innerHTML = renderFilters();
   container.appendChild(filtersEl);
   bindEvents();
@@ -126,11 +127,13 @@ function bindEvents(): void {
   header.addEventListener('click', () => {
     const body = filtersEl!.querySelector('#filters-body') as HTMLElement;
     const toggle = filtersEl!.querySelector('#filters-toggle') as HTMLElement;
-    if (body.style.display === 'none') {
+    if (body.style.display === 'none' || !filtersEl!.classList.contains('filters-open')) {
       body.style.display = '';
+      filtersEl!.classList.add('filters-open');
       toggle.textContent = '▼';
     } else {
       body.style.display = 'none';
+      filtersEl!.classList.remove('filters-open');
       toggle.textContent = '▶';
     }
   });

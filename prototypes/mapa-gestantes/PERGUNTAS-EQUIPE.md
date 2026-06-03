@@ -22,6 +22,7 @@
 ## 2. Validação dos Critérios de Urgência
 
 **2.1.** Estamos propondo classificar gestantes em 3 níveis: 🔴 Crítico, 🟡 Atenção, 🟢 Normal. Esses seriam os critérios para CRÍTICO:
+
 - TR HIV Reagente
 - TR Sífilis Reagente
 - TR Hepatite B Reagente
@@ -32,6 +33,7 @@
 **Isso faz sentido clinicamente? Falta alguma condição que vocês consideram crítica? Alguma dessas não deveria ser crítica?**
 
 **2.2.** Para ATENÇÃO, pensamos:
+
 - 15 a 45 dias sem consulta
 - Menos consultas que o esperado para a idade gestacional
 - Sem avaliação odontológica
@@ -49,6 +51,7 @@
 ## 3. Visualização e Camadas
 
 **3.1.** Se vocês pudessem "ligar e desligar" camadas de informação no mapa, quais combinações seriam mais úteis no dia a dia? Exemplos:
+
 - Ver só as críticas
 - Ver só as do 3º trimestre
 - Ver só as da microárea da ACS Maria
@@ -116,14 +119,3 @@
 **8.2.** Existe alguma informação que vocês SABEM que existe (no E-SUS, em outra planilha, na memória da ACS) mas que não está na planilha atual e gostariam de ter?
 
 **8.3.** Vocês já viram alguma ferramenta (app, site, sistema) que faz algo parecido e que gostaram? Ou algo que NÃO gostaram?
-
-**8.4.** Se a ferramenta funcionasse bem para gestantes, quais OUTRAS condições de saúde vocês gostariam de ver no mapa depois? (Tuberculose, crônicos, acamados, etc.) — Há prioridade entre elas?
-
----
-
-## Notas para o Entrevistador
-
-- Priorizar as seções 1, 2 e 8 se o tempo for curto
-- Anotar não só as respostas mas as reações (entusiasmo, confusão, dúvidas)
-- Se possível, mostrar o protótipo (mesmo incompleto) e observar como reagem
-- Perguntar se podemos voltar com mais perguntas depois, iterativamente

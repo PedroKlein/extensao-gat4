@@ -89,6 +89,7 @@ export function initMicroareaLayer(container: HTMLElement, map: L.Map, markers: 
 
   // Toggle button
   toggleBtn = document.createElement('button');
+  toggleBtn.id = 'microarea-toggle';
   toggleBtn.className = 'absolute bottom-16 right-4 z-[900] bg-white rounded-lg shadow-lg px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 border border-gray-200 transition-colors';
   toggleBtn.textContent = '🗺️ Microáreas';
   toggleBtn.addEventListener('click', toggleMicroareas);
