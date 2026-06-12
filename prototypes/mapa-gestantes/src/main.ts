@@ -93,7 +93,7 @@ async function showRoute(destLat: number, destLng: number): Promise<void> {
       }).addTo(map);
 
       const distKm = (route.distance / 1000).toFixed(1);
-      const timeMin = Math.ceil(route.duration / 60);
+      const timeMin = Math.ceil(route.distance / 83.3); // 5 km/h walking speed
       routeLayer.bindTooltip(`🚶 ${distKm} km • ~${timeMin} min`, { permanent: true, direction: 'center', className: 'route-label' });
     }
   } catch (err) {
